@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YogicLife - Yoga Awareness & Well-being</title>
-    <!-- PWA Manifest for Mobile Installation -->
-    <link rel="manifest" href='data:application/manifest+json,{"name":"YogicLife","short_name":"YogicLife","start_url":"./","display":"standalone","background_color":"%23F7F4EF","theme_color":"%23D97757","icons":[{"src":"https://cdn-icons-png.flaticon.com/512/3022/3022314.png","sizes":"512x512","type":"image/png"}]}'>
-    <meta name="theme-color" content="#D97757">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -14,8 +11,16 @@
             theme: {
                 extend: {
                     colors: {
-                        terracotta: { DEFAULT: '#D97757', light: '#E69D84', dark: '#B85838' },
-                        sage: { DEFAULT: '#7A9A82', light: '#A3BBA9', dark: '#5A7862' },
+                        terracotta: {
+                            DEFAULT: '#D97757',
+                            light: '#E69D84',
+                            dark: '#B85838'
+                        },
+                        sage: {
+                            DEFAULT: '#7A9A82',
+                            light: '#A3BBA9',
+                            dark: '#5A7862'
+                        },
                         sand: '#F7F4EF',
                         gold: '#D4AF37'
                     }
@@ -28,187 +33,419 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F7F4EF; color: #2C3E35; }
-        h1, h2, h3, .font-serif { font-family: 'Playfair Display', serif; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #F7F4EF;
+            color: #2C3E35;
+        }
+        h1, h2, h3, .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
 <body class="bg-sand min-h-screen flex flex-col justify-between selection:bg-terracotta selection:text-white">
 
     <!-- Top Header -->
-    <header class="bg-white/85 backdrop-blur-md sticky top-0 z-50 border-b border-sage/25 px-4 py-3">
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-sage/20 px-4 py-3">
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div class="flex items-center space-x-2">
-                <div class="w-9 h-9 rounded-full bg-terracotta flex items-center justify-center text-white shadow-md">
-                    <i class="fa-solid fa-spa text-base"></i>
+                <div class="w-10 h-10 rounded-full bg-terracotta flex items-center justify-center text-white shadow-md">
+                    <i class="fa-solid fa-spa text-lg"></i>
                 </div>
                 <div>
-                    <h1 class="text-base font-bold text-sage-dark tracking-wide">YogicLife</h1>
-                    <p class="text-[9px] text-gray-500 uppercase tracking-widest font-semibold">Mind & Body Harmony</p>
+                    <h1 class="text-lg font-bold text-sage-dark tracking-wide">YogicLife</h1>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest font-semibold">Mind & Body Harmony</p>
                 </div>
             </div>
-            <div class="flex items-center space-x-2">
-                <span class="flex items-center space-x-1 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full text-xs font-semibold text-amber-700">
-                    <i class="fa-solid fa-fire text-orange-500 text-xs"></i>
-                    <span>5d streak</span>
-                </span>
+            <div class="flex items-center space-x-3">
+                <button onclick="openModal('streakModal')" class="flex items-center space-x-1 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full text-xs font-semibold text-amber-700 shadow-sm">
+                    <i class="fa-solid fa-fire text-orange-500"></i>
+                    <span id="streakCount">5</span>d streak
+                </button>
+                <button onclick="openModal('profileModal')" class="w-9 h-9 rounded-full bg-sage-light/30 flex items-center justify-center text-sage-dark border border-sage/30">
+                    <i class="fa-solid fa-user"></i>
+                </button>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Area -->
+    <!-- Main Content Area (Dynamic Tabs) -->
     <main class="max-w-md w-full mx-auto p-4 mb-20 flex-grow" id="mainContent">
         <!-- Home Dashboard View -->
-        <div id="view-home" class="space-y-4">
-            <div class="bg-gradient-to-r from-sage-dark to-sage text-white p-5 rounded-2xl shadow-lg">
-                <span class="text-[10px] uppercase tracking-wider bg-white/20 px-2.5 py-0.5 rounded-md font-medium">Daily Inspiration</span>
-                <h2 class="text-lg font-bold mt-2 font-serif">"Yoga is the journey of the self, through the self, to the self."</h2>
-                <p class="text-[11px] text-sage-light mt-1">- Bhagavad Gita</p>
-                <button onclick="switchTab('poses')" class="mt-3 bg-white text-sage-dark px-3.5 py-2 rounded-xl text-xs font-bold shadow hover:bg-sand transition flex items-center space-x-2">
+        <div id="view-home" class="space-y-6">
+            <!-- Greeting Banner -->
+            <div class="bg-gradient-to-r from-sage-dark to-sage text-white p-5 rounded-2xl shadow-lg relative overflow-hidden">
+                <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
+                <span class="text-xs uppercase tracking-wider bg-white/20 px-2.5 py-1 rounded-md font-medium">Daily Inspiration</span>
+                <h2 class="text-xl font-bold mt-2 font-serif">"Yoga is the journey of the self, through the self, to the self."</h2>
+                <p class="text-xs text-sage-light mt-1">- Bhagavad Gita</p>
+                <button onclick="switchTab('poses')" class="mt-4 bg-white text-sage-dark px-4 py-2 rounded-xl text-xs font-bold shadow hover:bg-sand transition flex items-center space-x-2">
                     <span>Start Practice Now</span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </div>
 
-            <div class="grid grid-cols-3 gap-2.5">
+            <!-- Quick Stats Grid -->
+            <div class="grid grid-cols-3 gap-3">
                 <div class="bg-white p-3 rounded-2xl shadow-sm border border-sage/10 text-center">
-                    <span class="block text-sm font-bold text-gray-800" id="statMins">45</span>
-                    <span class="text-[10px] text-gray-500">Mins Practiced</span>
+                    <div class="w-8 h-8 mx-auto rounded-full bg-terracotta/10 text-terracotta flex items-center justify-center mb-1">
+                        <i class="fa-solid fa-clock text-xs"></i>
+                    </div>
+                    <span class="block text-base font-bold text-gray-800" id="statMins">45</span>
+                    <span class="text-[10px] text-gray-500 font-medium">Mins Practiced</span>
                 </div>
                 <div class="bg-white p-3 rounded-2xl shadow-sm border border-sage/10 text-center">
-                    <span class="block text-sm font-bold text-gray-800">12</span>
-                    <span class="text-[10px] text-gray-500">Poses Mastered</span>
+                    <div class="w-8 h-8 mx-auto rounded-full bg-sage/10 text-sage-dark flex items-center justify-center mb-1">
+                        <i class="fa-solid fa-heart-pulse text-xs"></i>
+                    </div>
+                    <span class="block text-base font-bold text-gray-800">12</span>
+                    <span class="text-[10px] text-gray-500 font-medium">Poses Mastered</span>
                 </div>
                 <div class="bg-white p-3 rounded-2xl shadow-sm border border-sage/10 text-center">
-                    <span class="block text-sm font-bold text-gray-800">Level 2</span>
-                    <span class="text-[10px] text-gray-500">Yogi Status</span>
+                    <div class="w-8 h-8 mx-auto rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mb-1">
+                        <i class="fa-solid fa-award text-xs"></i>
+                    </div>
+                    <span class="block text-base font-bold text-gray-800">Level 2</span>
+                    <span class="text-[10px] text-gray-500 font-medium">Yogi Status</span>
                 </div>
             </div>
 
+            <!-- Pose of the Day -->
             <div class="bg-white p-4 rounded-2xl shadow-sm border border-sage/15">
-                <h3 class="font-bold text-gray-800 text-xs mb-2 flex items-center space-x-1.5">
-                    <i class="fa-solid fa-sun text-terracotta"></i>
-                    <span>Pose of the Day</span>
-                </h3>
-                <div class="flex space-x-3 items-center">
-                    <div class="w-14 h-14 bg-sage-light/20 rounded-xl flex items-center justify-center text-xl shrink-0">🧘‍♀️</div>
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="font-bold text-gray-800 text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-sun text-terracotta"></i>
+                        <span>Pose of the Day</span>
+                    </h3>
+                    <span class="text-[10px] bg-terracotta/10 text-terracotta px-2 py-0.5 rounded font-bold">Intermediate</span>
+                </div>
+                <div class="flex space-x-4 items-center">
+                    <div class="w-20 h-20 bg-sage-light/20 rounded-xl flex items-center justify-center text-sage-dark text-3xl shrink-0">
+                        🧘‍♀️
+                    </div>
                     <div>
-                        <h4 class="font-bold text-xs text-gray-900">Warrior II (Virabhadrasana II)</h4>
-                        <p class="text-[11px] text-gray-500 mt-0.5">Builds stamina, stretches hips, enhances focus.</p>
-                        <button onclick="switchTab('poses')" class="text-xs text-terracotta font-bold mt-1 inline-flex items-center space-x-1">
-                            <span>View Tutorials</span>
-                            <i class="fa-solid fa-chevron-right text-[9px]"></i>
+                        <h4 class="font-bold text-sm text-gray-900">Warrior II (Virabhadrasana II)</h4>
+                        <p class="text-xs text-gray-500 mt-0.5">Builds stamina, stretches hips and thighs, enhances focus.</p>
+                        <button onclick="openPoseDetail('Warrior II')" class="text-xs text-terracotta font-bold mt-2 inline-flex items-center space-x-1">
+                            <span>View Guide</span>
+                            <i class="fa-solid fa-chevron-right text-[10px]"></i>
                         </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Practices & Categories -->
+            <div>
+                <h3 class="font-bold text-gray-800 text-sm mb-3">Explore Practices</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <div onclick="switchTab('poses')" class="bg-white p-3.5 rounded-2xl shadow-sm border border-sage/10 cursor-pointer hover:border-terracotta transition">
+                        <div class="w-9 h-9 rounded-xl bg-terracotta/10 text-terracotta flex items-center justify-center mb-2">
+                            <i class="fa-solid fa-child-reaching"></i>
+                        </div>
+                        <h4 class="font-bold text-xs text-gray-800">Posture Tutorials</h4>
+                        <p class="text-[10px] text-gray-500 mt-0.5">Step-by-step alignments</p>
+                    </div>
+                    <div onclick="switchTab('benefits')" class="bg-white p-3.5 rounded-2xl shadow-sm border border-sage/10 cursor-pointer hover:border-terracotta transition">
+                        <div class="w-9 h-9 rounded-xl bg-sage/10 text-sage-dark flex items-center justify-center mb-2">
+                            <i class="fa-solid fa-brain"></i>
+                        </div>
+                        <h4 class="font-bold text-xs text-gray-800">Health Benefits</h4>
+                        <p class="text-[10px] text-gray-500 mt-0.5">Mind & body healing</p>
+                    </div>
+                    <div onclick="switchTab('audio')" class="bg-white p-3.5 rounded-2xl shadow-sm border border-sage/10 cursor-pointer hover:border-terracotta transition">
+                        <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center mb-2">
+                            <i class="fa-solid fa-music"></i>
+                        </div>
+                        <h4 class="font-bold text-xs text-gray-800">Mindful Audio</h4>
+                        <p class="text-[10px] text-gray-500 mt-0.5">Chimes & ambient sounds</p>
+                    </div>
+                    <div onclick="switchTab('reminders')" class="bg-white p-3.5 rounded-2xl shadow-sm border border-sage/10 cursor-pointer hover:border-terracotta transition">
+                        <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-2">
+                            <i class="fa-solid fa-bell"></i>
+                        </div>
+                        <h4 class="font-bold text-xs text-gray-800">Reminders</h4>
+                        <p class="text-[10px] text-gray-500 mt-0.5">Daily practice habits</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Postures Library View -->
-        <div id="view-poses" class="space-y-3 hidden">
-            <h2 class="text-sm font-bold text-gray-800">Posture Guide & Tutorials</h2>
-            <div class="space-y-2.5">
-                <div class="bg-white p-3 rounded-2xl shadow-sm border border-sage/10 flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-xl bg-sage-light/20 flex items-center justify-center text-base">🧘</div>
-                        <div>
-                            <h4 class="font-bold text-xs text-gray-900">Warrior II (Virabhadrasana II)</h4>
-                            <p class="text-[10px] text-gray-500">Stretches hips and thighs, builds stamina.</p>
-                        </div>
-                    </div>
-                    <span class="text-[9px] bg-sage/10 text-sage-dark px-2 py-0.5 rounded font-medium">Intermediate</span>
-                </div>
-                <div class="bg-white p-3 rounded-2xl shadow-sm border border-sage/10 flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-xl bg-sage-light/20 flex items-center justify-center text-base">🧘‍♀️</div>
-                        <div>
-                            <h4 class="font-bold text-xs text-gray-900">Tree Pose (Vrikshasana)</h4>
-                            <p class="text-[10px] text-gray-500">Improves balance and leg strength.</p>
-                        </div>
-                    </div>
-                    <span class="text-[9px] bg-sage/10 text-sage-dark px-2 py-0.5 rounded font-medium">Beginner</span>
-                </div>
-                <div class="bg-white p-3 rounded-2xl shadow-sm border border-sage/10 flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-xl bg-sage-light/20 flex items-center justify-center text-base">🙇‍♂️</div>
-                        <div>
-                            <h4 class="font-bold text-xs text-gray-900">Child's Pose (Balasana)</h4>
-                            <p class="text-[10px] text-gray-500">Calms brain and relieves back stress.</p>
-                        </div>
-                    </div>
-                    <span class="text-[9px] bg-sage/10 text-sage-dark px-2 py-0.5 rounded font-medium">Beginner</span>
-                </div>
+        <div id="view-poses" class="space-y-4 hidden">
+            <div class="flex justify-between items-center">
+                <h2 class="text-base font-bold text-gray-800">Posture Guide & Tutorials</h2>
+                <span class="text-xs text-gray-500 font-medium">10 Poses Available</span>
+            </div>
+            <!-- Search bar -->
+            <div class="relative">
+                <i class="fa-solid fa-search absolute left-3.5 top-3 text-gray-400 text-xs"></i>
+                <input type="text" id="poseSearch" oninput="filterPoses()" placeholder="Search asana name or benefit..." class="w-full bg-white pl-10 pr-4 py-2.5 rounded-xl text-xs border border-sage/20 focus:outline-none focus:border-terracotta shadow-sm">
+            </div>
+            <!-- Poses List Container -->
+            <div class="space-y-3" id="posesList">
+                <!-- Javascript will populate poses here -->
             </div>
         </div>
 
         <!-- Health Benefits View -->
-        <div id="view-benefits" class="space-y-3 hidden">
-            <h2 class="text-sm font-bold text-gray-800">Health & Wellness Benefits</h2>
-            <div class="space-y-2.5">
-                <div class="bg-white p-3.5 rounded-2xl shadow-sm border border-sage/10">
-                    <h3 class="font-bold text-xs text-gray-900 mb-1">❤️ Cardiovascular Health</h3>
-                    <p class="text-[11px] text-gray-600">Lowers resting heart rate and improves oxygen uptake through controlled breathing.</p>
+        <div id="view-benefits" class="space-y-4 hidden">
+            <h2 class="text-base font-bold text-gray-800">Health & Wellness Benefits</h2>
+            <p class="text-xs text-gray-600">Discover how consistent yoga practice scientifically transforms your mental and physical ecosystem.</p>
+            
+            <div class="space-y-3">
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-sage/10">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <div class="w-8 h-8 rounded-lg bg-red-50 text-red-500 flex items-center justify-center">
+                            <i class="fa-solid fa-heart-pulse"></i>
+                        </div>
+                        <h3 class="font-bold text-xs text-gray-900">Cardiovascular & Blood Circulation</h3>
+                    </div>
+                    <p class="text-xs text-gray-600 leading-relaxed">Yoga lowers resting heart rate, increases endurance, and improves oxygen uptake by optimizing blood flow throughout muscle groups.</p>
                 </div>
-                <div class="bg-white p-3.5 rounded-2xl shadow-sm border border-sage/10">
-                    <h3 class="font-bold text-xs text-gray-900 mb-1">🧠 Mental Clarity & Stress Relief</h3>
-                    <p class="text-[11px] text-gray-600">Regulates cortisol levels and activates calming nervous system responses.</p>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-sage/10">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center">
+                            <i class="fa-solid fa-brain"></i>
+                        </div>
+                        <h3 class="font-bold text-xs text-gray-900">Mental Clarity & Stress Reduction</h3>
+                    </div>
+                    <p class="text-xs text-gray-600 leading-relaxed">By regulating cortisol levels and activating the parasympathetic nervous system, yoga minimizes anxiety and enhances cognitive focus.</p>
+                </div>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-sage/10">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+                            <i class="fa-solid fa-bone"></i>
+                        </div>
+                        <h3 class="font-bold text-xs text-gray-900">Flexibility & Spinal Alignment</h3>
+                    </div>
+                    <p class="text-xs text-gray-600 leading-relaxed">Regular asanas safely decompress vertebral discs, lengthen connective tissues, and relieve chronic lower back tension.</p>
                 </div>
             </div>
         </div>
 
-        <!-- Reminders & Audio View -->
-        <div id="view-reminders" class="space-y-3 hidden">
-            <h2 class="text-sm font-bold text-gray-800">Practice Reminders</h2>
-            <div class="bg-white p-3.5 rounded-2xl shadow-sm border border-sage/10 flex justify-between items-center">
-                <div>
-                    <h4 class="font-bold text-xs text-gray-900">Morning Awakening Flow</h4>
-                    <p class="text-[10px] text-gray-500">07:00 AM Daily</p>
+        <!-- Audio & Meditation View -->
+        <div id="view-audio" class="space-y-4 hidden">
+            <h2 class="text-base font-bold text-gray-800">Mindful Ambient Sounds</h2>
+            <p class="text-xs text-gray-600">Enhance your yoga meditation with restorative sound frequencies and nature chimes.</p>
+            
+            <div class="space-y-3">
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-sage/10 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-terracotta/10 text-terracotta flex items-center justify-center">
+                            <i class="fa-solid fa-bell text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xs text-gray-900">Tibetan Singing Bowl</h3>
+                            <p class="text-[10px] text-gray-500">432Hz Chakra Healing Tone</p>
+                        </div>
+                    </div>
+                    <button onclick="toggleAudio('bowl')" id="btn-bowl" class="w-9 h-9 rounded-full bg-terracotta text-white flex items-center justify-center shadow">
+                        <i class="fa-solid fa-play text-xs"></i>
+                    </button>
                 </div>
-                <span class="text-[10px] bg-terracotta/10 text-terracotta font-bold px-2 py-0.5 rounded-full">Active</span>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-sage/10 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center">
+                            <i class="fa-solid fa-cloud-rain text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xs text-gray-900">Zen Rain & Wind</h3>
+                            <p class="text-[10px] text-gray-500">Soothing water frequencies</p>
+                        </div>
+                    </div>
+                    <button onclick="toggleAudio('rain')" id="btn-rain" class="w-9 h-9 rounded-full bg-sage text-white flex items-center justify-center shadow">
+                        <i class="fa-solid fa-play text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reminders & Habits View -->
+        <div id="view-reminders" class="space-y-4 hidden">
+            <div class="flex justify-between items-center">
+                <h2 class="text-base font-bold text-gray-800">Practice Reminders</h2>
+                <button onclick="openModal('addReminderModal')" class="bg-terracotta text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm">
+                    <i class="fa-solid fa-plus mr-1"></i> Add Reminder
+                </button>
+            </div>
+            
+            <div class="space-y-3" id="remindersList">
+                <!-- Reminder items populated via JS -->
             </div>
         </div>
     </main>
 
     <!-- Bottom Navigation Bar -->
-    <nav class="bg-white border-t border-sage/20 fixed bottom-0 left-0 right-0 z-40 max-w-md mx-auto py-2 px-4 flex justify-around items-center shadow-lg">
+    <nav class="bg-white border-t border-sage/20 fixed bottom-0 left-0 right-0 z-40 max-w-md mx-auto py-2 px-6 flex justify-between items-center shadow-lg">
         <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center text-terracotta transition">
-            <i class="fa-solid fa-house text-sm"></i>
-            <span class="text-[9px] font-semibold mt-0.5">Home</span>
+            <i class="fa-solid fa-house text-base"></i>
+            <span class="text-[10px] font-semibold mt-0.5">Home</span>
         </button>
         <button onclick="switchTab('poses')" id="nav-poses" class="flex flex-col items-center text-gray-400 hover:text-terracotta transition">
-            <i class="fa-solid fa-child-reaching text-sm"></i>
-            <span class="text-[9px] font-semibold mt-0.5">Poses</span>
+            <i class="fa-solid fa-child-reaching text-base"></i>
+            <span class="text-[10px] font-semibold mt-0.5">Poses</span>
         </button>
         <button onclick="switchTab('benefits')" id="nav-benefits" class="flex flex-col items-center text-gray-400 hover:text-terracotta transition">
-            <i class="fa-solid fa-heart-pulse text-sm"></i>
-            <span class="text-[9px] font-semibold mt-0.5">Benefits</span>
+            <i class="fa-solid fa-heart-pulse text-base"></i>
+            <span class="text-[10px] font-semibold mt-0.5">Benefits</span>
+        </button>
+        <button onclick="switchTab('audio')" id="nav-audio" class="flex flex-col items-center text-gray-400 hover:text-terracotta transition">
+            <i class="fa-solid fa-music text-base"></i>
+            <span class="text-[10px] font-semibold mt-0.5">Audio</span>
         </button>
         <button onclick="switchTab('reminders')" id="nav-reminders" class="flex flex-col items-center text-gray-400 hover:text-terracotta transition">
-            <i class="fa-solid fa-bell text-sm"></i>
-            <span class="text-[9px] font-semibold mt-0.5">Reminders</span>
+            <i class="fa-solid fa-bell text-base"></i>
+            <span class="text-[10px] font-semibold mt-0.5">Reminders</span>
         </button>
     </nav>
 
-    <!-- Navigation Script -->
+    <!-- Modal: Pose Detail -->
+    <div id="poseDetailModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-end justify-center">
+        <div class="bg-white w-full max-w-md rounded-t-3xl p-6 max-h-[85vh] overflow-y-auto space-y-4 animate-slide-up">
+            <div class="flex justify-between items-center">
+                <span id="modalPoseLevel" class="text-[10px] bg-terracotta/10 text-terracotta px-2.5 py-1 rounded font-bold uppercase tracking-wider"></span>
+                <button onclick="closeModal('poseDetailModal')" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <h2 id="modalPoseTitle" class="text-xl font-bold text-gray-900 font-serif"></h2>
+            <p id="modalPoseDesc" class="text-xs text-gray-600 leading-relaxed"></p>
+            
+            <div class="bg-sand p-3.5 rounded-2xl space-y-2 border border-sage/10">
+                <h4 class="font-bold text-xs text-sage-dark flex items-center space-x-1.5">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>Step-by-Step Alignment</span>
+                </h4>
+                <ol id="modalPoseSteps" class="text-xs text-gray-700 space-y-1.5 list-decimal pl-4">
+                </ol>
+            </div>
+
+            <button onclick="completePoseSession()" class="w-full bg-terracotta text-white py-3 rounded-xl text-xs font-bold shadow-md hover:bg-terracotta-dark transition">
+                Complete 5-Min Practice Session
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript Data & Logic -->
     <script>
+        const posesData = [
+            { id: 1, name: "Warrior II (Virabhadrasana II)", level: "Intermediate", target: "Lower Body", desc: "Builds stamina, stretches hips and thighs, enhances physical focus.", steps: ["Stand with feet wide apart.", "Turn right foot out 90 degrees.", "Bend right knee over ankle.", "Extend arms parallel to floor gaze over right hand."] },
+            { id: 2, name: "Tree Pose (Vrikshasana)", level: "Beginner", target: "Balance", desc: "Improves balance, strengthens thighs, calves, and ankles.", steps: ["Shift weight to left foot.", "Place right sole against inner left thigh.", "Bring palms together at heart center.", "Fix gaze on a steady point."] },
+            { id: 3, name: "Child's Pose (Balasana)", level: "Beginner", target: "Relaxation", desc: "Gently stretches lower back, hips, thighs, and ankles while calming the brain.", steps: ["Kneel on the floor with toes touching.", "Sit back on your heels.", "Exhale and lay torso down between thighs.", "Extend arms forward."] },
+            { id: 4, name: "Downward-Facing Dog (Adho Mukha Svanasana)", level: "Beginner", target: "Full Body", desc: "Energizes the body, stretches shoulders, hamstrings, calves, and hands.", steps: ["Come onto hands and knees.", "Lift knees away from floor.", "Push tailbone up and back.", "Press heels gently downward."] },
+            { id: 5, name: "Cobra Pose (Bhujangasana)", level: "Beginner", target: "Spine", desc: "Strengthens spine, stretches chest, lungs, shoulders, and abdomen.", steps: ["Lie flat on stomach with palms under shoulders.", "Inhale and straighten arms to lift chest.", "Keep shoulders broad and neck neutral."] }
+        ];
+
+        let reminders = [
+            { id: 1, time: "07:00 AM", title: "Morning Awakening Flow", active: true },
+            { id: 2, time: "06:00 PM", title: "Evening Decompression", active: true }
+        ];
+
+        let totalMins = 45;
+        let streak = 5;
+
         function switchTab(tabId) {
-            ['home', 'poses', 'benefits', 'reminders'].forEach(t => {
-                const view = document.getElementById(`view-${t}`);
-                const nav = document.getElementById(`nav-${t}`);
-                if(view) view.classList.add('hidden');
-                if(nav) {
-                    nav.classList.remove('text-terracotta');
-                    nav.classList.add('text-gray-400');
-                }
+            ['home', 'poses', 'benefits', 'audio', 'reminders'].forEach(t => {
+                document.getElementById(`view-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).classList.remove('text-terracotta');
+                document.getElementById(`nav-${t}`).classList.add('text-gray-400');
             });
-            const targetView = document.getElementById(`view-${tabId}`);
-            const targetNav = document.getElementById(`nav-${tabId}`);
-            if(targetView) targetView.classList.remove('hidden');
-            if(targetNav) {
-                targetNav.classList.remove('text-gray-400');
-                targetNav.classList.add('text-terracotta');
-            }
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+            document.getElementById(`nav-${tabId}`).classList.remove('text-gray-400');
+            document.getElementById(`nav-${tabId}`).classList.add('text-terracotta');
             window.scrollTo(0, 0);
         }
+
+        function renderPoses(filteredList = posesData) {
+            const container = document.getElementById('posesList');
+            container.innerHTML = '';
+            filteredList.forEach(pose => {
+                container.innerHTML += `
+                    <div onclick="openPoseDetail('${pose.name}')" class="bg-white p-3.5 rounded-2xl shadow-sm border border-sage/10 flex items-center justify-between cursor-pointer hover:border-terracotta transition">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 rounded-xl bg-sage-light/20 flex items-center justify-center text-sage-dark text-lg font-bold">
+                                🧘
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-xs text-gray-900">${pose.name}</h4>
+                                <p class="text-[10px] text-gray-500 mt-0.5">${pose.desc.substring(0, 50)}...</p>
+                            </div>
+                        </div>
+                        <span class="text-[10px] bg-sage/10 text-sage-dark px-2 py-1 rounded font-medium">${pose.level}</span>
+                    </div>
+                `;
+            });
+        }
+
+        function filterPoses() {
+            const query = document.getElementById('poseSearch').value.toLowerCase();
+            const filtered = posesData.filter(p => p.name.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query));
+            renderPoses(filtered);
+        }
+
+        function openPoseDetail(poseName) {
+            const pose = posesData.find(p => p.name === poseName);
+            if (!pose) return;
+            document.getElementById('modalPoseLevel').innerText = `${pose.level} • ${pose.target}`;
+            document.getElementById('modalPoseTitle').innerText = pose.name;
+            document.getElementById('modalPoseDesc').innerText = pose.desc;
+            
+            const stepsList = document.getElementById('modalPoseSteps');
+            stepsList.innerHTML = '';
+            pose.steps.forEach(step => {
+                stepsList.innerHTML += `<li>${step}</li>`;
+            });
+
+            document.getElementById('poseDetailModal').classList.remove('hidden');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        function completePoseSession() {
+            totalMins += 5;
+            document.getElementById('statMins').innerText = totalMins;
+            closeModal('poseDetailModal');
+            alert('🎉 Great job! Session completed and added to your practice minutes.');
+        }
+
+        function renderReminders() {
+            const container = document.getElementById('remindersList');
+            container.innerHTML = '';
+            reminders.forEach(rem => {
+                container.innerHTML += `
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-sage/10 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                                <i class="fa-solid fa-clock"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-xs text-gray-900">${rem.title}</h4>
+                                <p class="text-[10px] text-gray-500">${rem.time}</p>
+                            </div>
+                        </div>
+                        <span class="text-xs text-terracotta font-bold bg-terracotta/10 px-2.5 py-1 rounded-full">Active</span>
+                    </div>
+                `;
+            });
+        }
+
+        let audioPlaying = null;
+        function toggleAudio(type) {
+            alert(`Playing mindful ambient sound: ${type === 'bowl' ? 'Tibetan Singing Bowl' : 'Zen Rain'}`);
+        }
+
+        // Initialize lists on load
+        renderPoses();
+        renderReminders();
     </script>
 </body>
 </html>
